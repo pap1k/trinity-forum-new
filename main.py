@@ -26,6 +26,5 @@ while work:
             log("Skipped")
             time.sleep(60*config.DELAY)
         
-        
     except KeyboardInterrupt:
         work = False

@@ -142,7 +142,6 @@ class Post:
         r = vk.api("photos.saveWallPhoto", photo= r['photo'], server= r['server'], hash = r['hash'])
         return f"photo{r[0]['owner_id']}_{r[0]['id']}" if r else ""
 
-
 class Parser:
     exclude : list
     trigger : list
