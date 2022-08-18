@@ -1,5 +1,5 @@
 from kernel.log import Log
-import xmltodict, requests, re, config, html, time
+import xmltodict, requests, re, config, html, time, sys
 from bs4 import BeautifulSoup as bs
 import kernel.antiddos
 from kernel.vk import VK
@@ -51,7 +51,7 @@ class Post:
     title : str = None
     id : str = None
     attached_images : list = None
-    subforum : list = None 
+    subforums : list = None 
     text : str = None
     link : str = None
 
@@ -102,19 +102,20 @@ class Post:
         return "attachments/fract_news.jpg"
 
     def vkupload(self, vk : VK) -> bool:
-        #sending post to vk
-        #uploading photo(s)
+        if "-test" in sys.argv:
+            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
+            return True
         if len(self.attached_images) != 0:
             photo = ""
             for img in self.attached_images:
-                photo += vk.upload_photo(img, vk) + ","
+                photo += self.upload_photo(img, vk) + ","
         elif self.hat != "":
-            photo = vk.upload_photo(self.hat, vk)
+            photo = self.upload_photo(self.hat, vk)
         else:
-            photo = vk.upload_photo(self.getAttachment(), vk)
+            photo = self.upload_photo(self.getAttachment(), vk)
 
         wall_post_data =  {
-                "owner_id": 0-vk.POST_GROUP_ID,
+                "owner_id": 0-config.POST_GROUP_ID,
                 "from_group": 1,
                 "message": f"{self.tag}\n{self.title}\n\n{self.text}",
                 "publish_date": int(time.time())+24*3600,
@@ -134,6 +135,7 @@ class Post:
 
     def upload_photo(self, img, vk : VK):
         if not img: return None
+        print(img)
         img = self.Image(img)
         r = vk.api("photos.getWallUploadServer", peer_id=config.POST_GROUP_ID)
         r = requests.post(r['upload_url'],files={'photo':('photo.png', img.content(),'image/png')}).json()
@@ -153,8 +155,12 @@ class Parser:
         self.trigger = trigger_names
         self.posted_ids = posted
 
+    def updateForum(self, newforum):
+        self.forum = newforum
+
     def search(self):
-        return self.process(xmltodict.parse(self.forum.getXmlPage(), encoding="utf-8"))
+        html = self.forum.getXmlPage()
+        return self.process(xmltodict.parse(html.text, encoding="utf-8"))
 
     def savePostedId(self, id):
         self.posted_ids.append(id)
@@ -182,6 +188,7 @@ class Parser:
             if str(post_id) in self.posted_ids:
                 continue
 
+            log(f"[{post_id}] New post was found", title=title)
             POST = Post(post_id)
             POST.title = title
 
@@ -192,28 +199,35 @@ class Parser:
 
             post_html = bs(self.forum.getPage(post['link']).text,'html.parser')
             forum_post = post_html.find_all('div', class_='ipsColumn ipsColumn_fluid')[-1]
-            forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsContained')
+            forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsPadding_bottom ipsContained')
+
             try:
                 for img in forum_post.find_all('img'):
-                    if not "emoji" in img['src']:
-                        POST.attached_images.append(img['src'])
+                    if not "emoji" in img['data-src']:
+                        POST.attached_images.append(img['data-src'])
+                log(f"[{post_id}] Added {len(POST.attached_images)} post photos")
             except: pass
             
             if len(POST.attached_images) == 0:
+                log(f"[{post_id}] No post photos found, getting header photo")
                 index = bs(self.forum.getPage(re.findall(r"(.+)\?do=findComment&", post['link'])[0]).text,'html.parser')
 
                 forum_post = index.find_all('div', class_='ipsColumn ipsColumn_fluid')[0]
-                forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsContained')
-                try: POST.hat = forum_post.find_all('img')[0]['src']
-                except: pass
+                forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsPadding_bottom ipsContained')
+                try:
+                    POST.hat = forum_post.find_all('img')[0]['data-src']
+                    log(f"[{post_id}] Header photo got")
+                except:
+                    log(f"[{post_id}] No header photo was found")
+                    pass
 
-            POST.subforum = []
-            nav_bar = index.find('nav', class_="ipsBreadcrumb ipsBreadcrumb_top ipsFaded_withHover")
+            POST.subforums = []
+            nav_bar = post_html.find('nav', class_="ipsBreadcrumb ipsBreadcrumb_top ipsFaded_withHover")
             nav_bar = nav_bar.find('ul', attrs={"data-role": True})
             spans = nav_bar.find_all('span')
             for sp in spans:
-                POST.subforum.append(re.sub(r'(\<(/?[^>]+)>)', '', str(sp)))
-            POST.subforum.append(title)
+                POST.subforums.append(re.sub(r'(\<(/?[^>]+)>)', '', str(sp)))
+            POST.subforums.append(title)
 
             post['description'] = re.sub(r'\t', '', post['description'])
             post['description'] = re.sub(r'\n\s*\n', '\n', post['description'])

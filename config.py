@@ -4,3 +4,4 @@ news_alerts = ['usa na]', 'pa$e news', 'usa news', 'news agency', 'rc news', 'us
 fileposted = "posted.txt"
 POST_GROUP_ID = 145098987
 PROD_CONV_PEER = 166 + 2000000000
+DELAY = 5 #3 : 28_800 times a day, 5 : ~ 15k-17k
