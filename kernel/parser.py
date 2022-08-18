@@ -142,6 +142,9 @@ class Post:
         r = vk.api("photos.saveWallPhoto", photo= r['photo'], server= r['server'], hash = r['hash'])
         return f"photo{r[0]['owner_id']}_{r[0]['id']}" if r else ""
 
+class ForumException(Exception):
+    pass
+
 class Parser:
     exclude : list
     trigger : list
@@ -159,7 +162,10 @@ class Parser:
 
     def search(self):
         html = self.forum.getXmlPage()
-        return self.process(xmltodict.parse(html.text, encoding="utf-8"))
+        if html:
+            return self.process(xmltodict.parse(html.text, encoding="utf-8"))
+        else:
+            raise ForumException
 
     def savePostedId(self, id):
         self.posted_ids.append(id)
