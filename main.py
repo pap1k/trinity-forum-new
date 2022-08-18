@@ -1,9 +1,12 @@
 from kernel.vk import VK
 from kernel.log import Log
 from kernel.parser import Parser, Forum, ForumException
+from os.path import exists
 import os, config, time
 
 log = Log("[MAIN]").log
+if not exists(config.fileposted):
+    open(config.fileposted, 'w').close()
 posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 
 vk = VK(os.getenv("VK_TOKEN", default=""))
