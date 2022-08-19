@@ -5,3 +5,4 @@ fileposted = "posted.txt"
 POST_GROUP_ID = 145098987
 PROD_CONV_PEER = 166 + 2000000000
 DELAY = 3 #3 : 28_800 times a day, 5 : ~ 15k-17k
+NAME = '[CC]Trinity Parser/v2.0'

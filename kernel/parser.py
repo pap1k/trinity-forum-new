@@ -11,7 +11,7 @@ class Forum:
     session : requests.Session
     def __init__(self, useproxy = True) -> None:
         self.session = requests.Session()
-        self.session.headers.update({'User-Agent': '[CC]Trinity Parser/v2.0'})
+        self.session.headers.update({'User-Agent': config.NAME})
         if useproxy:
             self.session.proxies = {'http': 'socks5h://127.0.0.1:9050','https': 'socks5h://127.0.0.1:9050'}
         self.connect()

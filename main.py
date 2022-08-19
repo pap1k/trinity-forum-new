@@ -15,6 +15,10 @@ time_start = time.time()
 vk = VK(os.getenv("VK_TOKEN", default=""))
 parser = Parser(Forum(), config.news_alerts, config.news_names, posted=posted)
 
+log("============================")
+log(config.NAME, "STARTED")
+log("============================")
+
 work = True
 while work:
     try:
