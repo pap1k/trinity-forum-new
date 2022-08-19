@@ -18,6 +18,7 @@ parser = Parser(Forum(), config.news_alerts, config.news_names, posted=posted)
 log("============================")
 log(config.NAME, "STARTED")
 log("============================")
+vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nЗапущен")
 
 work = True
 while work:
@@ -37,7 +38,7 @@ while work:
     except ForumException:
         log("Forum exception, re-init forum connection")
         if "-test" in sys.argv:
-            vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nСоединение с форумом потеряно. С момента запуска (последнего обновления): "+str((time.time()-time_start)/60)+" минут")
+            vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nСоединение с форумом потеряно. С момента запуска (последнего обновления): "+str((time.time()-time_start)//60)+" минут")
             time_start = time.time()
         parser.updateForum(Forum())
     except KeyboardInterrupt:
