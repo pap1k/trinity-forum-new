@@ -38,3 +38,6 @@ while work:
         parser.updateForum(Forum(False))
     except KeyboardInterrupt:
         work = False
+    except Exception as e:
+        log("Exception handled, exiting")
+        work=False
