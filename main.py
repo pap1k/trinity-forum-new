@@ -13,7 +13,7 @@ posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 time_start = time.time()
 
 vk = VK(os.getenv("VK_TOKEN", default=""))
-parser = Parser(Forum(False), config.news_alerts, config.news_names, posted=posted)
+parser = Parser(Forum(), config.news_alerts, config.news_names, posted=posted)
 
 work = True
 while work:
@@ -35,7 +35,7 @@ while work:
         if "-test" in sys.argv:
             vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nСоединение с форумом потеряно. С момента запуска (последнего обновления): "+str((time.time()-time_start)/60)+" минут")
             time_start = time.time()
-        parser.updateForum(Forum(False))
+        parser.updateForum(Forum())
     except KeyboardInterrupt:
         work = False
     except Exception as e:
