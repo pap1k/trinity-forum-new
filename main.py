@@ -1,7 +1,7 @@
 from email import message
 from kernel.vk import VK
 from kernel.log import Log
-from kernel.parser import Parser, Forum, ForumException
+from kernel.parser import Parser, Forum, ForumException, Post
 from os.path import exists
 import os, config, time, sys
 
@@ -20,6 +20,16 @@ log(config.NAME, "STARTED")
 log("============================")
 if "-test" in sys.argv:
     vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nБот запущен")
+
+if "-test2" in sys.argv:
+    result = Post("0")
+    result.tag = "#ccnews"
+    result.title = "TESTTEST"
+    result.subforums = ["Главная","Разделы игровых серверов", "Trinity RPG - 185.169.134.83:7777", "Жалобы и игровые обсуждения","Поощрения лидерам и хелперам за их активность"]
+    result.text = "Это тестовый пост. Всем привет."
+    result.link = "http://vk.com/id0"
+
+    result.vkupload(vk)
 
 work = True
 while work:

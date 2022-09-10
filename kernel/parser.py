@@ -103,9 +103,9 @@ class Post:
         return "attachments/fract_news.jpg"
 
     def vkupload(self, vk : VK) -> bool:
-        if "-test" in sys.argv:
-            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
-            return True
+        #if "-test" in sys.argv:
+        #vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
+        #    return True
         if len(self.attached_images) != 0:
             photo = ""
             for img in self.attached_images:
@@ -117,7 +117,7 @@ class Post:
             if type(att) == list:
                 photos = []
                 for a in att:
-                    self.upload_photo(a, vk)
+                    photos.append(self.upload_photo(a, vk))
                 photo = ','.join(photos)
             else:
                 photo = self.upload_photo(att, vk)
@@ -143,7 +143,6 @@ class Post:
 
     def upload_photo(self, img, vk : VK):
         if not img: return None
-        print(img)
         img = self.Image(img)
         r = vk.api("photos.getWallUploadServer", peer_id=config.POST_GROUP_ID)
         r = requests.post(r['upload_url'],files={'photo':('photo.png', img.content(),'image/png')}).json()
