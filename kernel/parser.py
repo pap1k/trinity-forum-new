@@ -5,7 +5,8 @@ import kernel.antiddos
 from kernel.vk import VK
 
 log = Log("[Parser]").log
-URL = 'https://gta-trinity.ru/forum/'
+DOMAIN = "gta-trinity.com"
+URL = f'https://{DOMAIN}/forum/'
 
 class Forum:
     session : requests.Session
@@ -24,7 +25,7 @@ class Forum:
             name='REACTLABSPROTECTION',
             value=ddos_code,
             path='/',
-            domain='gta-trinity.ru',
+            domain=DOMAIN,
             expires=2145916555,
             rest = {'hostOnly':True}
         )
