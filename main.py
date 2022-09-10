@@ -13,12 +13,13 @@ posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 time_start = time.time()
 
 vk = VK(os.getenv("VK_TOKEN", default=""))
-parser = Parser(Forum(), config.news_alerts, config.news_names, posted=posted)
+parser = Parser(Forum(not("-test" in sys.argv)), config.news_alerts, config.news_names, posted=posted)
 
 log("============================")
 log(config.NAME, "STARTED")
 log("============================")
-vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nЗапущен")
+if "-test" in sys.argv:
+    vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nБот запущен")
 
 work = True
 while work:
