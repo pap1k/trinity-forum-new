@@ -97,7 +97,7 @@ class Post:
             elif "передачу постов" in title:
                 return None
             elif "поощрения лидерам" in title:
-                return None
+                return ["attachments/encouragement.jpg", "attachments/encouragement_2.jpg"]
             elif "выговоры лидеров" in title:
                 return "attachments/leader_reb.jpg"
         return "attachments/fract_news.jpg"
@@ -113,7 +113,14 @@ class Post:
         elif self.hat != "":
             photo = self.upload_photo(self.hat, vk)
         else:
-            photo = self.upload_photo(self.getAttachment(), vk)
+            att = self.getAttachment()
+            if type(att) == list:
+                photos = []
+                for a in att:
+                    self.upload_photo(a, vk)
+                photo = ','.join(photos)
+            else:
+                photo = self.upload_photo(att, vk)
 
         wall_post_data =  {
                 "owner_id": 0-config.POST_GROUP_ID,
