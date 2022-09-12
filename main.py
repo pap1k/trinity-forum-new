@@ -55,5 +55,5 @@ while work:
     except KeyboardInterrupt:
         work = False
     except Exception as e:
-        log("Exception handled, exiting")
+        log(f"Exception handled, exiting: {e}")
         work=False
