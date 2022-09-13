@@ -129,7 +129,6 @@ class Post:
                 "publish_date": int(time.time())+24*3600,
                 "copyright": self.link
             }
-        print(wall_post_data)
         if photo: wall_post_data["attachments"] = photo
 
         posted = vk.api("wall.post", **wall_post_data)
