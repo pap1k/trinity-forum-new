@@ -129,6 +129,7 @@ class Post:
                 "publish_date": int(time.time())+24*3600,
                 "copyright": self.link
             }
+        print(wall_post_data)
         if photo: wall_post_data["attachments"] = photo
 
         posted = vk.api("wall.post", **wall_post_data)
@@ -245,6 +246,7 @@ class Parser:
             post['description'] = re.sub(r'\n\s*\n', '\n', post['description'])
             post['description'] = html.unescape(post['description'])
             POST.text = post['description']
+            POST.link = post['link']
 
             return POST
 
