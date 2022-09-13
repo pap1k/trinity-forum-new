@@ -245,6 +245,7 @@ class Parser:
             post['description'] = re.sub(r'\n\s*\n', '\n', post['description'])
             post['description'] = html.unescape(post['description'])
             POST.text = post['description']
+            POST.link = post['link']
 
             return POST
 
