@@ -3,6 +3,8 @@ import xmltodict, requests, re, config, html, time, sys
 from bs4 import BeautifulSoup as bs
 import kernel.antiddos
 from kernel.vk import VK
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 
 log = Log("[Parser]").log
 DOMAIN = "gta-trinity.com"
@@ -101,6 +103,29 @@ class Post:
             elif "выговоры лидеров" in title:
                 return "attachments/leader_reb.jpg"
         return "attachments/fract_news.jpg"
+    
+    def remove_obscenes(self, text: str):
+        for obscene in config.OBSCENES:
+            text = re.sub(obscene, str('*'*len(obscene)), text, flags=re.I|re.M|re.X)
+        return text
+    
+    def post_is_exist(self, vk: VK, text: str):
+        wall_get_data =  {
+            "owner_id": 0-config.POST_GROUP_ID,
+            "count": 3,
+        }
+        result = vk.api("wall.get", **wall_get_data)
+
+        if not result:
+            return False, 0
+        
+        for post in result['items']:
+            percent = fuzz.ratio(post['text'], text)
+            if percent > 74:
+                return True, percent
+            
+        return False, 0
+                
 
     def vkupload(self, vk : VK) -> bool:
         #if "-test" in sys.argv:
@@ -121,19 +146,33 @@ class Post:
                 photo = ','.join(photos)
             else:
                 photo = self.upload_photo(att, vk)
-
+                
+        self.text = self.remove_obscenes(self.text)
+        
         wall_post_data =  {
-                "owner_id": 0-config.POST_GROUP_ID,
-                "from_group": 1,
-                "message": f"{self.tag}\n{self.title}\n\n{self.text}",
-                "publish_date": int(time.time())+24*3600,
-                "copyright": self.link
-            }
+            "owner_id": 0-config.POST_GROUP_ID,
+            "from_group": 1,
+            "message": f"{self.tag}\n{self.title}\n\n{self.text}",
+            "copyright": self.link
+        }
+        
+        is_exist, percent = self.post_is_exist(vk, wall_post_data["message"])
+        if is_exist:
+            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nПолучен пост на {int(percent)}% похожий на тот что уже есть в группе.\n\n{self.link}\n{str('-'*32)}")
+            log("Такой пост уже есть в группе!")
+            return True
+        
+        if len(self.text) < 250:
+            wall_post_data["publish_date"] = int(time.time())+24*3600
+            
         if photo: wall_post_data["attachments"] = photo
 
         posted = vk.api("wall.post", **wall_post_data)
         if posted:
-            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"В отложке новый пост:\n\n{self.tag}\n{self.title}")
+            if len(self.text) < 250:
+                vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
+            else:
+                vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и запощен автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
             log("Posted \""+self.title+"\" post_id = "+str(self.id))
             return True
         else:

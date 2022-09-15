@@ -3,4 +3,5 @@ __pycache__/
 log.txt
 posted.txt
 config.py
-
+config.sh
+env/
