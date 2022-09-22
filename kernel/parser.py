@@ -163,7 +163,8 @@ class Post:
             return True
         
         if len(self.text) < 250:
-            wall_post_data["publish_date"] = int(time.time())+24*3600
+            if not self.title == 'Заявки на передачу постов лидера фракций, банд, мафий и байкерских клубов':
+                wall_post_data["publish_date"] = int(time.time())+24*3600
             
         if photo: wall_post_data["attachments"] = photo
 
