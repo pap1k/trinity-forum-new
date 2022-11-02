@@ -5,6 +5,7 @@ import kernel.antiddos
 from kernel.vk import VK
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+from constants import OBSCENES
 
 log = Log("[Parser]").log
 DOMAIN = "gta-trinity.com"
@@ -105,8 +106,8 @@ class Post:
         return "attachments/fract_news.jpg"
     
     def remove_obscenes(self, text: str):
-        for obscene in config.OBSCENES:
-            text = re.sub(obscene, str('*'*len(obscene)), text, flags=re.I|re.M|re.X)
+        for obscene in OBSCENES:
+            text = re.sub(f' {obscene} ', ' '+str('*'*len(obscene))+' ', text, flags=re.I|re.M|re.X)
         return text
     
     def post_is_exist(self, vk: VK, text: str):

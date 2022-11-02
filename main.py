@@ -4,6 +4,7 @@ from kernel.log import Log
 from kernel.parser import Parser, Forum, ForumException, Post
 from os.path import exists
 import os, config, time, sys
+from constants import NEWS_ALERTS, NEWS_NAMES
 
 log = Log("[MAIN]").log
 if not exists(config.fileposted):
@@ -12,8 +13,8 @@ posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 
 time_start = time.time()
 
-vk = VK(os.getenv("VK_TOKEN", default=""))
-parser = Parser(Forum(not("-test" in sys.argv)), config.news_alerts, config.news_names, posted=posted)
+vk = VK(config.VK_TOKEN)
+parser = Parser(Forum(not("-test" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, posted=posted)
 
 log("============================")
 log(config.NAME, "STARTED")
