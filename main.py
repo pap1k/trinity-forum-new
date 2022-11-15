@@ -14,7 +14,7 @@ posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 time_start = time.time()
 
 vk = VK(config.VK_TOKEN)
-parser = Parser(Forum(not("-test" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, posted=posted)
+parser = Parser(Forum(not("-test" in sys.argv or "-noproxy" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, posted=posted)
 
 log("============================")
 log(config.NAME, "STARTED")

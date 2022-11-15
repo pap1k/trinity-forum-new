@@ -129,9 +129,9 @@ class Post:
                 
 
     def vkupload(self, vk : VK) -> bool:
-        #if "-test" in sys.argv:
-        #vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
-        #    return True
+        if "-test" in sys.argv:
+            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
+            return True
         if len(self.attached_images) != 0:
             photo = ""
             for img in self.attached_images:
@@ -251,7 +251,7 @@ class Parser:
                 POST.tag = "#ccnews"
 
             post_html = bs(self.forum.getPage(post['link']).text,'html.parser')
-            forum_post = post_html.find_all('div', class_='ipsColumn ipsColumn_fluid')[-1]
+            forum_post = post_html.find('article', {'id': f"elComment_{post_id}"})
             forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsPadding_bottom ipsContained')
 
             try:
@@ -265,7 +265,7 @@ class Parser:
                 log(f"[{post_id}] No post photos found, getting header photo")
                 index = bs(self.forum.getPage(re.findall(r"(.+)\?do=findComment&", post['link'])[0]).text,'html.parser')
 
-                forum_post = index.find_all('div', class_='ipsColumn ipsColumn_fluid')[0]
+                forum_post = index.find_all('article')[0]
                 forum_post = forum_post.find('div', class_='ipsType_normal ipsType_richText ipsPadding_bottom ipsContained')
                 try:
                     POST.hat = forum_post.find_all('img')[0]['data-src']
