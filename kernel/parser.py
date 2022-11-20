@@ -231,7 +231,7 @@ class Parser:
             ExitFlag=False
             for news_alert in self.trigger:
                 if not ExitFlag:
-                    sub = title.lower().replace(news_alert, '')
+                    sub = title.lower().replace(news_alert.lower(), '')
                     if len(sub) != len(title): ExitFlag = True
             for news_name in self.exclude:
                 if news_name.lower() in sub:
