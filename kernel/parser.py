@@ -85,7 +85,7 @@ class Post:
                 return "attachments/helper_report.jpg"
             elif "претензии к работе администраторов" in title:
                 return "attachments/admin_report.jpg"
-            elif "на лидеров фракций, банд," in title:
+            elif "на лидеров фракций и банд" in title:
                 return "attachments/leader_report.jpg"
             elif "новый лидер" in title:
                 return "attachments/new_leader.jpg"
