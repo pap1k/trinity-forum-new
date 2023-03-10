@@ -6,6 +6,8 @@ from kernel.vk import VK
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from constants import OBSCENES
+from better_profanity import profanity
+profanity.add_censor_words(OBSCENES)
 
 log = Log("[Parser]").log
 DOMAIN = "gta-trinity.com"
@@ -106,9 +108,7 @@ class Post:
         return "attachments/fract_news.jpg"
     
     def remove_obscenes(self, text: str):
-        for obscene in OBSCENES:
-            text = re.sub(f' {obscene} ', ' '+str('*'*len(obscene))+' ', text, flags=re.I|re.M|re.X)
-        return text
+        return profanity.censor(text)
     
     def post_is_exist(self, vk: VK, text: str):
         wall_get_data =  {
