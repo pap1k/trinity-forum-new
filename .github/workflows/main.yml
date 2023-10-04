@@ -17,5 +17,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SECRET_KEY }}
         port: ${{ secrets.PORT }}
-        script: cd ~/deploy_scripts && source trinity-forum-new.sh
+        script: /root/python/service/updateforum.sh
           
