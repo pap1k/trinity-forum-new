@@ -17,5 +17,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SECRET_KEY }}
         port: ${{ secrets.PORT }}
-        script: /root/python/service/updateforum.sh
+        script: /bin/bash /root/python/service/updateforum.sh
           
