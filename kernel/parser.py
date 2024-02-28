@@ -128,9 +128,10 @@ class Post:
         return False, 0
                 
 
-    def vkupload(self, vk : VK) -> bool:
+    def vkupload(self, vk : VK, vk2: VK = None) -> bool:
+        if not vk2: vk2 = vk
         if "-test" in sys.argv:
-            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
+            vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"[TESTING]\nОбнаружен и готов к публикации пост.")
             return True
         if len(self.attached_images) != 0:
             photo = ""
@@ -159,7 +160,7 @@ class Post:
         
         is_exist, percent = self.post_is_exist(vk, wall_post_data["message"])
         if is_exist:
-            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nПолучен пост на {int(percent)}% похожий на тот что уже есть в группе.\n\n{self.link}\n{str('-'*32)}")
+            vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nПолучен пост на {int(percent)}% похожий на тот что уже есть в группе.\n\n{self.link}\n{str('-'*32)}")
             log("Такой пост уже есть в группе!")
             return True
         
@@ -172,13 +173,13 @@ class Post:
         posted = vk.api("wall.post", **wall_post_data)
         if posted:
             if len(self.text) < 250:
-                vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
+                vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
             else:
-                vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и запощен автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
+                vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и запощен автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
             log("Posted \""+self.title+"\" post_id = "+str(self.id))
             return True
         else:
-            vk.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"Ошибка wall.post")
+            vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"Ошибка wall.post")
             log("Ошибка поста")
             return False
 

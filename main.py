@@ -14,13 +14,14 @@ posted = [i for i in open(config.fileposted, 'r').read().split(',')]
 time_start = time.time()
 
 vk = VK(config.VK_TOKEN)
+vk_gr = VK(config.VK_TOKEN_GROUP)
 parser = Parser(Forum(not("-test" in sys.argv or "-noproxy" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, posted=posted)
 
 log("============================")
 log(config.NAME, "STARTED")
 log("============================")
 if "-test" in sys.argv:
-    vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nБот запущен")
+    vk_gr.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nБот запущен")
 
 if "-test2" in sys.argv:
     result = Post("0")
@@ -30,7 +31,8 @@ if "-test2" in sys.argv:
     result.text = "Это тестовый пост. Всем привет."
     result.link = "http://vk.com/id0"
 
-    result.vkupload(vk)
+    result.vkupload(vk, vk_gr)
+    quit()
 
 work = True
 while work:
@@ -38,7 +40,7 @@ while work:
         log("Searching for new post...")
         result = parser.search()
         if result:
-            loaded = result.vkupload(vk)
+            loaded = result.vkupload(vk, vk_gr)
             if loaded:
                 log(f"[{result.id}] Uploaded to vk")
                 parser.savePostedId(result.id)
@@ -50,7 +52,7 @@ while work:
     except ForumException:
         log("Forum exception, re-init forum connection")
         if "-test" in sys.argv:
-            vk.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nСоединение с форумом потеряно. С момента запуска (последнего обновления): "+str((time.time()-time_start)//60)+" минут")
+            vk_gr.api("messages.send", peer_id=config.PROD_CONV_PEER, message="[TESTING]\nСоединение с форумом потеряно. С момента запуска (последнего обновления): "+str((time.time()-time_start)//60)+" минут")
             time_start = time.time()
         parser.updateForum(Forum())
     except KeyboardInterrupt:

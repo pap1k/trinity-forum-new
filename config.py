@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 VK_TOKEN = os.getenv('VK_TOKEN')
+VK_TOKEN_GROUP = os.getenv('VK_TOKEN_GROUP')
 fileposted = os.getenv("FILE_POSTED")
 POST_GROUP_ID = int(os.getenv("POST_GROUP_ID"))
 PROD_CONV_PEER = int(os.getenv("PROD_CONV_PEER")) + 2000000000
