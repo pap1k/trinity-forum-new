@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-VK_TOKEN = os.getenv('VK_TOKEN')
+VK_TOKEN = os.getenv('VK_TOKEN_USER')
 VK_TOKEN_GROUP = os.getenv('VK_TOKEN_GROUP')
 fileposted = os.getenv("FILE_POSTED")
 POST_GROUP_ID = int(os.getenv("POST_GROUP_ID"))
