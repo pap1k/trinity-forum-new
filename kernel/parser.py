@@ -1,6 +1,7 @@
 from kernel.log import Log
 import xmltodict, requests, re, config, html, time, sys
 from bs4 import BeautifulSoup as bs
+from gpt_react import get_reaction
 import kernel.antiddos
 from kernel.vk import VK
 from fuzzywuzzy import fuzz
@@ -170,12 +171,25 @@ class Post:
             
         if photo: wall_post_data["attachments"] = photo
 
+        #REACTION
+        promt = wall_post_data.message
+        has_reaction = False
+        reaction_text = ""
+        try:
+            reaction_text = get_reaction(promt)
+            has_reaction = True
+        except:
+            pass
+        #------
+
         posted = vk.api("wall.post", **wall_post_data)
         if posted:
             if len(self.text) < 250:
-                vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
+                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
             else:
-                vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и запощен автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
+                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и запощен автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
+            if has_reaction:
+                vk2.api("message.send", peer_id= config.PROD_CONV_PEER, reply_to=msg, message="Кстати...\n\n"+reaction_text)
             log("Posted \""+self.title+"\" post_id = "+str(self.id))
             return True
         else:
