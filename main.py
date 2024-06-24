@@ -3,7 +3,7 @@ from kernel.vk import VK
 from kernel.log import Log
 from kernel.parser import Parser, Forum, ForumException, Post
 from os.path import exists
-import os, config, time, sys
+import os, config, time, sys, traceback
 from constants import NEWS_ALERTS, NEWS_NAMES
 
 log = Log("[MAIN]").log
@@ -58,5 +58,6 @@ while work:
     except KeyboardInterrupt:
         work = False
     except Exception as e:
+        print(traceback.format_exc())
         log(f"Exception handled, exiting: {e}")
         work=False
