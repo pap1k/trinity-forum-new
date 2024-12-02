@@ -241,7 +241,7 @@ class Parser:
     def process(self, xml) -> Post:
         for post in xml['rss']['channel']['item']:
 
-            topic_id = int(re.findall(r'topic(\d+)-', post['link'])[0])
+            topic_id = int(re.findall(r'topic/(\d+)-', post['link'])[0])
             if topic_id in self.exclude_topics:
                 continue
 
