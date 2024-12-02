@@ -4,7 +4,7 @@ from kernel.log import Log
 from kernel.parser import Parser, Forum, ForumException, Post
 from os.path import exists
 import os, config, time, sys, traceback
-from constants import NEWS_ALERTS, NEWS_NAMES
+from constants import NEWS_ALERTS, NEWS_NAMES, EXCLUDE_TOPICS
 
 log = Log("[MAIN]").log
 if not exists(config.fileposted):
@@ -15,7 +15,7 @@ time_start = time.time()
 
 vk = VK(config.VK_TOKEN)
 vk_gr = VK(config.VK_TOKEN_GROUP)
-parser = Parser(Forum(not("-test" in sys.argv or "-noproxy" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, posted=posted)
+parser = Parser(Forum(not("-test" in sys.argv or "-noproxy" in sys.argv)), NEWS_ALERTS, NEWS_NAMES, EXCLUDE_TOPICS, posted=posted)
 
 log("============================")
 log(config.NAME, "STARTED")

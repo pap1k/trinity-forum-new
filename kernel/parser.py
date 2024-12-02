@@ -213,10 +213,12 @@ class Parser:
     trigger : list
     posted_ids : list
     forum : Forum
+    exclude_topics : list
 
-    def __init__(self, forum : Forum, trigger_names = [], exclude_names = [], posted = []) -> None:
+    def __init__(self, forum : Forum, trigger_names = [], exclude_names = [], exclude_topics = [], posted = []) -> None:
         self.forum = forum
         self.exclude = exclude_names
+        self.exclude_topics = exclude_topics
         self.trigger = trigger_names
         self.posted_ids = posted
 
@@ -238,6 +240,10 @@ class Parser:
 
     def process(self, xml) -> Post:
         for post in xml['rss']['channel']['item']:
+
+            topic_id = int(re.findall(r'topic(\d+)-', post['link'])[0])
+            if topic_id in self.exclude_topics:
+                continue
 
             post_id = re.findall(r't&comment=(\d+)', post['link'])[0]
             title = post['title']
