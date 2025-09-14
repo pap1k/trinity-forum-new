@@ -83,28 +83,28 @@ class Post:
         for i in range(len(self.subforums)-1, 0, -1):
             title = self.subforums[i].lower()
             if "жалобы на хелперов" in title:
-                return "attachments/helper_report.jpg"
+                return "attachments/helper_report.PNG"
             elif "претензии к работе администраторов" in title:
-                return "attachments/admin_report.jpg"
+                return "attachments/admin_report.PNG"
             elif "на лидеров фракций, банд," in title:
-                return "attachments/leader_report.jpg"
+                return "attachments/leader_report.PNG"
             elif "новый лидер" in title:
-                return "attachments/new_leader.jpg"
+                return "attachments/new_leader.PNG"
             elif "банды" in title:
-                return "attachments/gang_news.jpg"
+                return "attachments/gang_news.PNG"
             elif "байкерские клубы" in title:
                 return "attachments/biker_news.jpg"
             elif "мафии" in title:
                 return "attachments/maf_news.jpg"
             elif "правительство" in title:
-                return "attachments/polit_news.jpg"
+                return "attachments/polit_news.PNG"
             elif "передачу постов" in title:
                 return None
             elif "поощрения лидерам" in title:
-                return ["attachments/encouragement.jpg", "attachments/encouragement_2.jpg"]
+                return "attachments/encouragement.PNG"
             elif "выговоры лидеров" in title:
-                return "attachments/leader_reb.jpg"
-        return "attachments/fract_news.jpg"
+                return "attachments/leader_reb.PNG"
+        return "attachments/fract_news.PNG"
     
     def remove_obscenes(self, text: str):
         for obscene in OBSCENES:
