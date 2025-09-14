@@ -4,7 +4,7 @@ from kernel.log import Log
 
 CORE_V = 0.3
 
-API_URL = "https://api.vk.com/method/"
+API_URL = "https://api.vk.ru/method/"
 API_V = 5.103
 MAX_REQUESTS_PER_SEC = 4
 REQUEST_DELAY = int(1/MAX_REQUESTS_PER_SEC*1000)

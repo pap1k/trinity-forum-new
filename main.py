@@ -29,7 +29,7 @@ if "-test2" in sys.argv:
     result.title = "TESTTEST"
     result.subforums = ["Главная","Разделы игровых серверов", "Trinity RPG - 185.169.134.83:7777", "Жалобы и игровые обсуждения","Поощрения лидерам и хелперам за их активность"]
     result.text = "Это тестовый пост. Всем привет."
-    result.link = "http://vk.com/id0"
+    result.link = "http://vk.ru/id0"
 
     result.vkupload(vk, vk_gr)
     quit()
