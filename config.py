@@ -10,3 +10,6 @@ POST_GROUP_ID = int(os.getenv("POST_GROUP_ID"))
 PROD_CONV_PEER = int(os.getenv("PROD_CONV_PEER")) + 2000000000
 DELAY = int(os.getenv("DELAY")) #3 : 28_800 times a day, 5 : ~ 15k-17k
 NAME = '[CC]Trinity Parser/v2.5'
+TG_TOKEN=os.getenv("TG_TOKEN")
+TG_ANOUNCE_ID=-1002644900239
+TG_ANNOUNCE_THREAD=1187

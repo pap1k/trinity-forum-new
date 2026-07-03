@@ -5,7 +5,8 @@ from gpt_react import get_reaction
 import kernel.antiddos
 from kernel.vk import VK
 from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
+from asyncio import run
+from tg_util import announce_tg
 from constants import OBSCENES
 
 log = Log("[Parser]").log
@@ -185,9 +186,14 @@ class Post:
         posted = vk.api("wall.post", **wall_post_data)
         if posted:
             if len(self.text) < 250:
-                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}")
+                txt = f"{str('-'*32)}\nВ отложке новый пост, проверьте вручную:\n\n{self.tag}\n{self.title}\n\n{self.text}\n\n{self.link}\n{str('-'*32)}"
+                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = txt)
+                run(announce_tg(txt))
             else:
-                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = f"{str('-'*32)}\nСкорее всего пост нормальный и опубликован автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}")
+                txt = f"{str('-'*32)}\nСкорее всего пост нормальный и опубликован автоматически:\n\n{self.tag}\n{self.title}\n\n{self.link}\n{str('-'*32)}"
+                msg = vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, message = txt)
+                run(announce_tg(txt))
+
             if has_reaction:
                 vk2.api("messages.send", peer_id= config.PROD_CONV_PEER, reply_to=msg, message="Кстати...\n\n"+reaction_text)
             log("Posted \""+self.title+"\" post_id = "+str(self.id))
